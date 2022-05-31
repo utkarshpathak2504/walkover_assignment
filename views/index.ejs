@@ -18,5 +18,12 @@
       <input type="url" name="url" id="url" placeholder="url here..." />
       <input type="submit" value="create url" />
     </form>
+
+    <div class="short-url">
+      <% if (locals.short_url) { %>
+      <a href="http://<%= short_url %>" target="_blank"><%= short_url %> </a>
+      
+      <% } %>
+    </div>
 </body>
 </html>
