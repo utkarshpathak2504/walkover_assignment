@@ -21,3 +21,35 @@ mongoose
   })
   .then(() => console.log('mongoose connected 💾'))
   .catch((error) => console.log('Error connecting..'))
+
+
+  app.set('view engine', 'ejs')
+
+app.get('/', async (req, res, next) => {
+  res.render('index')
+})
+
+app.post('/', async (req, res, next) => {
+  try {
+    const { url } = req.body
+    if (!url) {
+      throw createHttpError.BadRequest('Provide a valid url')
+    }
+    const urlExists = await ShortUrl.findOne({ url })
+    if (urlExists) {
+      res.render('index', {
+        // short_url: `${req.hostname}/${urlExists.shortId}`,
+        short_url: `${req.headers.host}/${urlExists.shortId}`,
+      })
+      return
+    }
+    const shortUrl = new ShortUrl({ url: url, shortId: shortId.generate() })
+    const result = await shortUrl.save()
+    res.render('index', {
+      // short_url: `${req.hostname}/${urlExists.shortId}`,
+      short_url: `${req.headers.host}/${result.shortId}`,
+    })
+  } catch (error) {
+    next(error)
+  }
+})
